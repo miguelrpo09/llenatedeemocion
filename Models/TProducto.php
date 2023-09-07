@@ -30,8 +30,9 @@ trait TProducto{
 				p.cantxdia,
 				p.cantxmes,
 				p.cantxannio,
+
 				(COALESCE((SELECT
-				SUM(tdp.cantidad) 
+				SUM(CAST(tdp.cantidad as INT)) 
 				FROM pedido tp
 				INNER JOIN detalle_pedido tdp
 				ON tdp.pedidoid = tp.idpedido
@@ -41,7 +42,7 @@ trait TProducto{
 				AND tp.status IN ('Completo', 'Aprobado', 'Pendiente')),0)) as CantTotalUtilizadaAnno,
 				
 				(COALESCE((SELECT
-				SUM(tdp.cantidad) 
+				SUM(CAST(tdp.cantidad as INT)) 
 				FROM pedido tp
 				INNER JOIN detalle_pedido tdp
 				ON tdp.pedidoid = tp.idpedido
@@ -51,7 +52,7 @@ trait TProducto{
 				AND tp.status IN ('Completo', 'Aprobado', 'Pendiente')),0)) as CantTotalUtilizadaMes,
 				
 				(COALESCE((SELECT
-				SUM(tdp.cantidad) 
+				SUM(CAST(tdp.cantidad as INT)) 
 				FROM pedido tp
 				INNER JOIN detalle_pedido tdp
 				ON tdp.pedidoid = tp.idpedido
@@ -142,7 +143,7 @@ trait TProducto{
 				FROM pedido tp
 				INNER JOIN detalle_pedido tdp
 				ON tdp.pedidoid = tp.idpedido
-				WHERE date(tp.fecha) = date(NOW())
+				WHERE DATE(tp.fecha) = DATE(NOW())
 				AND tp.personaid = $personaid
 				AND tdp.productoid = p.idproducto
 				AND tp.status IN ('Completo', 'Aprobado', 'Pendiente')),0)) as CantTotalUtilizadaDia
@@ -269,7 +270,7 @@ trait TProducto{
 				p.cantxdia,
 				p.cantxmes,
 				p.cantxannio,
-				(SELECT
+				(COALESCE((SELECT
 				SUM(tdp.cantidad) 
 				FROM pedido tp
 				INNER JOIN detalle_pedido tdp
@@ -277,8 +278,8 @@ trait TProducto{
 				WHERE YEAR(tp.fecha) = YEAR(NOW())
 				AND tp.personaid = $personaid
 				AND tdp.productoid = p.idproducto
-				AND tp.status IN ('Completo', 'Aprobado', 'Pendiente')) as CantTotalUtilizadaAnno,
-				(SELECT
+				AND tp.status IN ('Completo', 'Aprobado', 'Pendiente')),0)) as CantTotalUtilizadaAnno,
+				(COALESCE((SELECT
 				SUM(tdp.cantidad) 
 				FROM pedido tp
 				INNER JOIN detalle_pedido tdp
@@ -286,16 +287,16 @@ trait TProducto{
 				WHERE MONTH(tp.fecha) = MONTH(NOW())
 				AND tp.personaid = $personaid
 				AND tdp.productoid = p.idproducto
-				AND tp.status IN ('Completo', 'Aprobado', 'Pendiente')) as CantTotalUtilizadaMes,
-				(SELECT
+				AND tp.status IN ('Completo', 'Aprobado', 'Pendiente')),0)) as CantTotalUtilizadaMes,
+				(COALESCE((SELECT
 				SUM(tdp.cantidad) 
 				FROM pedido tp
 				INNER JOIN detalle_pedido tdp
 				ON tdp.pedidoid = tp.idpedido
-				WHERE tp.fecha = NOW()
+				WHERE DATE(tp.fecha) = DATE(NOW())
 				AND tp.personaid = $personaid
 				AND tdp.productoid = p.idproducto
-				AND tp.status IN ('Completo', 'Aprobado', 'Pendiente')) as CantTotalUtilizadaDia
+				AND tp.status IN ('Completo', 'Aprobado', 'Pendiente')),0)) as CantTotalUtilizadaDia
 
 				FROM producto p 
 				INNER JOIN categoria c 
