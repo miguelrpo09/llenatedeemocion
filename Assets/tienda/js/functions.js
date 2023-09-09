@@ -93,7 +93,7 @@ $('.js-addwish-detail').each(function(){
 $('.js-addcart-detail').each(function(){
 
 	let nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
-
+	
 	let cant = 1;
 
 	$(this).on('click', function(){
@@ -499,20 +499,20 @@ function fntUpdateCant(pro,cant){
 	if(cant <= 0){
 
 		swal("","La cantidad debe ser mayor que 0" , "error");
-
-		document.querySelector("#btnComprar").classList.add("notblock");
+		document.getElementById(pro).value=1
+		// document.querySelector("#btnComprar").classList.remove("notblock");
 
 	}else if(cant >3 ){
 
 		swal("","La cantidad debe ser menor o igual que 3" , "error");
-
-		document.querySelector("#btnComprar").classList.add("notblock");
+		document.getElementById(pro).value=3
+		// document.querySelector("#btnComprar").classList.remove("notblock");
 
 		return;
 
 	}else{
 
-		document.querySelector("#btnComprar").classList.remove("notblock");
+		//document.querySelector("#btnComprar").classList.remove("notblock");
 
 		let request = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
 
@@ -551,13 +551,12 @@ function fntUpdateCant(pro,cant){
 					console.log(document.getElementById(objData.idproducto).value)
 					
 					if(document.getElementById(objData.idproducto).value > 1){
-
 						document.getElementById(objData.idproducto).value=(document.getElementById(objData.idproducto).value-1);
 					}else{
-						document.getElementById(objData.idproducto).value=0;
+						document.getElementById(objData.idproducto).value=1;
 					}
 
-					document.querySelector("#btnComprar").classList.add("notblock");
+						//document.querySelector("#btnComprar").classList.add("notblock");
 
 	    			swal("", objData.msg , "error");
 

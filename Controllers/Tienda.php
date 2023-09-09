@@ -98,8 +98,8 @@
 				if(is_numeric($idproducto) and is_numeric($cantidad)){
 					
 					if(isset($_SESSION['idUser'])){
-					
-						$validacionxproductoxusuario=$this->validarproducto($idproducto,$_SESSION['idUser'], $cantidad);
+					$methodcalled = "addCarrito";
+						$validacionxproductoxusuario=$this->validarproducto($idproducto,$_SESSION['idUser'], $cantidad, $methodcalled);
 
 						$arrInfoProducto = $this->getProductoIDT($idproducto);
 
@@ -260,22 +260,18 @@
 				$total = 0;
 				$idproducto = openssl_decrypt($_POST['id'], METHODENCRIPT, KEY);
 				$cantidad = intval($_POST['cantidad']);
+				$methodcalled = "updCarrito";
 
 				if(is_numeric($idproducto) and $cantidad > 0){
 					
 					if(isset($_SESSION['idUser'])){
-						
-						$validacionxproductoxusuario=$this->validarproducto($idproducto,$_SESSION['idUser'],$cantidad);
+						$validacionxproductoxusuario=$this->validarproducto($idproducto,$_SESSION['idUser'],$cantidad, $methodcalled);
+						$arrInfoProducto = $this->getProductoIDT($idproducto);
 						
 						if($validacionxproductoxusuario["Permisoxdia"] && $validacionxproductoxusuario["Permisoxmes"] && $validacionxproductoxusuario["Permisoxanno"]){
 							$arrCarrito = $_SESSION['arrCarrito'];
 							for ($p=0; $p < count($arrCarrito); $p++) { 
 								if($arrCarrito[$p]['idproducto'] == $idproducto){
-									//antes de actualizar carrito, validar si esa nueva cant (suma) si es permitido agregarlo.
-									//si es permitido lo agrega.
-									//sino aborta mision y no hace cambios en el carrito
-
-
 									$arrCarrito[$p]['cantidad'] = $cantidad;
 									$totalProducto = $arrCarrito[$p]['precio'] * $cantidad;
 									break;
@@ -292,7 +288,24 @@
 												"total" => /* SMONEY.formatMoney */($subtotal + COSTOENVIO)
 									);
 						}else{
-							$arrResponse = array("status" => false, "msg" => 'No se agrego al carrito.  Ha superado los limites de pedidos.',"idproducto"=>openssl_encrypt($idproducto, METHODENCRIPT, KEY));
+						
+							$msg_usuario="";
+							switch (true) {
+								case !$validacionxproductoxusuario["Permisoxdia"]:
+									$msg_usuario="Ha superado el limite maximo por dia.  El limite es: ".$arrInfoProducto["cantxdia"];
+									break;
+								case !$validacionxproductoxusuario["Permisoxmes"]:
+									$msg_usuario="Ha superado el limite maximo por mes.  El limite es: ".$arrInfoProducto["cantxmes"];
+								break;
+								case !$validacionxproductoxusuario["Permisoxanno"]:
+									$msg_usuario = "Ha superado el limite maximo por año. El limite es: " . $arrInfoProducto["cantxannio"];
+								break;
+								default:
+									# code...
+									break;
+							}
+
+							$arrResponse = array("status" => false, "msg" => $msg_usuario,"idproducto"=>openssl_encrypt($idproducto, METHODENCRIPT, KEY));
 						}
 
 					}else{
@@ -316,8 +329,6 @@
 											"total" => SMONEY.formatMoney($subtotal + COSTOENVIO)
 									);
 					}
-					
-					
 
 				}else{
 					$arrResponse = array("status" => false, "msg" => 'Dato incorrecto.');
@@ -618,8 +629,8 @@
 			die();
 		}
 
-		public function validarproducto($idproducto,$personaid_p,$cantpost=1){
-			
+		public function validarproducto($idproducto,$personaid_p,$cantpost,$methodcalled){
+
 			$cantExistenteCarrito = 0;
 			
 			$permisos=array(
@@ -634,20 +645,34 @@
 				if(!empty($_SESSION['arrCarrito'])){
 					for ($pr=0; $pr < count($_SESSION['arrCarrito']); $pr++) {
 						if($_SESSION['arrCarrito'][$pr]["idproducto"] == $idproducto){
-							$cantExistenteCarrito=$_SESSION['arrCarrito'][$pr]["cantidad"];
+							$cantExistenteCarrito=($_SESSION['arrCarrito'][$pr]["cantidad"]);
 						}else{
 							$cantExistenteCarrito=0;
 						}
 					}
+				}else{
+					$cantExistenteCarrito= 0;
 				}
+				
+				if($methodcalled === "addCarrito"){
+					$cantidadaprocesar=$cantExistenteCarrito + $cantpost;
+				}else if($methodcalled === "updCarrito"){
+					$cantidadaprocesar= $cantpost;
+				}
+				
+				// echo "Call: " . $methodcalled;
+				// echo "<br>Cantidad que trae desde el input: ". $cantpost;
+				// echo "<br>Cantidad existente en el carrito actualmente: ".$cantExistenteCarrito ;
+				// echo "<br>Cantidad a procesar (Carrito + la pedida): ". $cantidadaprocesar;
+				// echo "<br>Cantidad que ya tiene pedidas y utilizadas: ". $listaproductos[0]["CantTotalUtilizadaDia"]."<br>";
 
-				if (($cantExistenteCarrito + $cantpost + $listaproductos[0]["CantTotalUtilizadaDia"]) <= $listaproductos[0]["cantxdia"]) {
+				if (($cantidadaprocesar + $listaproductos[0]["CantTotalUtilizadaDia"]) <= $listaproductos[0]["cantxdia"]) {
 					$permisos["Permisoxdia"] = true;
 				}
-				if (($cantExistenteCarrito + $cantpost + $listaproductos[0]["CantTotalUtilizadaMes"]) <= $listaproductos[0]["cantxmes"]) {
+				if (($cantidadaprocesar + $listaproductos[0]["CantTotalUtilizadaMes"]) <= $listaproductos[0]["cantxmes"]) {
 					$permisos["Permisoxmes"] = true;
 				}
-				if (($cantExistenteCarrito + $cantpost + $listaproductos[0]["CantTotalUtilizadaAnno"]) <= $listaproductos[0]["cantxannio"]) {
+				if (($cantidadaprocesar  + $listaproductos[0]["CantTotalUtilizadaAnno"]) <= $listaproductos[0]["cantxannio"]) {
 					$permisos["Permisoxanno"] = true;
 				}
 
