@@ -68,6 +68,7 @@ $urlShared = base_url()."/tienda/producto/".$arrProducto['idproducto']."/".$arrP
 						<!-- <p class="stext-102 cl3 p-t-23"></p> -->
 						<?= $arrProducto['descripcion']; ?>
 						<!--  -->
+						<?php if (isset($_SESSION['login'])) {  ?>		
 						<div class="p-t-33">
 							<div class="flex-w flex-r-m p-b-10">
 								<div class="size-204 flex-w flex-m respon6-next">
@@ -89,6 +90,7 @@ $urlShared = base_url()."/tienda/producto/".$arrProducto['idproducto']."/".$arrP
 								</div>
 							</div>	
 						</div>
+						<?php }  ?>
 						<!--  -->
 						<!-- <div class="flex-w flex-m p-l-100 p-t-40 respon7">
 							<div class="flex-m bor9 p-r-10 m-r-11">
@@ -157,6 +159,7 @@ $urlShared = base_url()."/tienda/producto/".$arrProducto['idproducto']."/".$arrP
 									</span> -->
 								</div>
 								<div class="block2-txt-child2 flex-r p-t-3">
+								<?php if (isset($_SESSION['login'])){ ?>
 									<a href="#"
 									 id="<?= openssl_encrypt($arrProductos[$p]['idproducto'],METHODENCRIPT,KEY); ?>"
 									 pr="1"
@@ -165,6 +168,9 @@ $urlShared = base_url()."/tienda/producto/".$arrProducto['idproducto']."/".$arrP
 									 ">
 										<i class="zmdi zmdi-shopping-cart"></i>
 									</a>
+								<?php }?>	
+								
+									
 								</div>
 							</div>
 						</div>

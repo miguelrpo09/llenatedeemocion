@@ -164,42 +164,54 @@ $arrProductos = $data['productos'];
 									</a>
 
 									<span class="row stext-105 cl3">
+									<?php if (isset($_SESSION['login'])) {  ?>
 										<?php if ($disponibleAnnio > 0 && $disponibleMes > 0 && $disponibleDia > 0) { ?>
 											<span class="col-10 align-self-start mt-3">Disponibles en el año</span>
-											<span class="badge badge-success px-3 py-2 col align-self-end"> <?php echo (isset($_SESSION['idUser']) > 0) ? $disponibleAnnio : 'Inicie sesión' ?></span>
-											<span class="col-10 align-self-start mt-2">Disponibles en el mes</span> <span class="badge badge-warning px-3 py-2 col align-self-end"> <?php echo (isset($_SESSION['idUser']) > 0) ? $disponibleMes : 'Inicie sesión' ?></span>
+											<span class="badge badge-success px-3 py-2 col align-self-end"> <?php echo $disponibleAnnio ?></span>
+											<span class="col-10 align-self-start mt-2">Disponibles en el mes</span> <span class="badge badge-warning px-3 py-2 col align-self-end"> <?php echo $disponibleMes ?></span>
 										<?php } else { ?>
 											<span style="color:red">Ya superaste las cantidades permitidas</span>
-										<?php } ?>
+									<?php }  ?>
+										
+										
+									<?php  } else {   ?>
+										<span class="badge badge-success px-3 py-2 col align-self-end"> Inicie sesión </span>
+									<?php }  ?>	
 										<? // SMONEY.formatMoney($arrProductos[$p]['precio']); 
 										?>
 
 									</span>
 
 								</div>
-								<?php if ($disponibleAnnio > 0 && $disponibleMes > 0 && $disponibleDia > 0) { ?>
+								<?php if (isset($_SESSION['login'])){ ?>
 
-									<div class="block2-txt-child2 flex-r p-t-3">
+									<?php if ($disponibleAnnio > 0 && $disponibleMes > 0 && $disponibleDia > 0) { ?>
 
-										<a href="#" id="<?= openssl_encrypt($arrProductos[$p]['idproducto'], METHODENCRIPT, KEY); ?>" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2 js-addcart-detail
+										<div class="block2-txt-child2 flex-r p-t-3">
 
-									icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11
+											<a href="#" id="<?= openssl_encrypt($arrProductos[$p]['idproducto'], METHODENCRIPT, KEY); ?>" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2 js-addcart-detail
 
-									">
+										icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11
 
-											<i class="zmdi zmdi-shopping-cart"></i>
+										">
 
-										</a>
+												<i class="zmdi zmdi-shopping-cart"></i>
 
-									</div>
-								<?php } else { ?>
-									<div class="block2-txt-child2 flex-r p-t-3">
+											</a>
 
-										<i class="fa fa-times-circle" aria-hidden="true" style="color:red"></i>
+										</div>
+										<?php } else { ?>
+										<div class="block2-txt-child2 flex-r p-t-3">
+
+											<i class="fa fa-times-circle" aria-hidden="true" style="color:red"></i>
 
 
-									</div>
-								<?php } ?>
+										</div>
+										<?php } ?>
+								     						
+								
+								<?php }  ?>
+								
 							</div>
 
 						</div>

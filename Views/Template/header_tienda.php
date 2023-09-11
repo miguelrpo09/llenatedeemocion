@@ -309,9 +309,10 @@
 
 
 							<li>
-
+								<?php if (isset($_SESSION['login'])){ ?>
 								<a href="<?= base_url(); ?>/carrito">Carrito</a>
-
+								<?php } ?>
+								
 							</li>
 
 							
@@ -355,13 +356,13 @@
 						</div>
 
 						<?php if($data['page_name'] != "carrito" and $data['page_name'] != "procesarpago"){ ?>
-
+						<?php if (isset($_SESSION['login'])){ ?>	
 						<div class="cantCarrito icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="<?= $cantCarrito; ?> ">
 
 							<i class="zmdi zmdi-shopping-cart"></i>
 
 						</div>
-
+						<?php } ?>
 						<?php } ?>
 
 					</div>
