@@ -32,7 +32,7 @@ trait TProducto{
 				p.cantxannio,
 
 				(COALESCE((SELECT
-				SUM(CAST(tdp.cantidad as INT)) 
+				SUM(tdp.cantidad) 
 				FROM pedido tp
 				INNER JOIN detalle_pedido tdp
 				ON tdp.pedidoid = tp.idpedido
@@ -42,7 +42,7 @@ trait TProducto{
 				AND tp.status IN ('Completo', 'Aprobado', 'Pendiente')),0)) as CantTotalUtilizadaAnno,
 				
 				(COALESCE((SELECT
-				SUM(CAST(tdp.cantidad as INT)) 
+				SUM(tdp.cantidad) 
 				FROM pedido tp
 				INNER JOIN detalle_pedido tdp
 				ON tdp.pedidoid = tp.idpedido
@@ -52,7 +52,7 @@ trait TProducto{
 				AND tp.status IN ('Completo', 'Aprobado', 'Pendiente')),0)) as CantTotalUtilizadaMes,
 				
 				(COALESCE((SELECT
-				SUM(CAST(tdp.cantidad as INT)) 
+				SUM(tdp.cantidad) 
 				FROM pedido tp
 				INNER JOIN detalle_pedido tdp
 				ON tdp.pedidoid = tp.idpedido
