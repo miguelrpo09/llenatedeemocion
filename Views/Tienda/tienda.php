@@ -168,7 +168,7 @@ $arrProductos = $data['productos'];
 										<?php if ($disponibleAnnio > 0 && $disponibleMes > 0 && $disponibleDia > 0) { ?>
 											<span class="col-10 align-self-start mt-3">Disponibles en el año</span>
 											<span class="badge badge-success px-3 py-2 col align-self-end"> <?php echo $disponibleAnnio ?></span>
-											<span class="col-10 align-self-start mt-2">Disponibles en el mes</span> <span class="badge badge-warning px-3 py-2 col align-self-end"> <?php echo $disponibleMes ?></span>
+											<span class="col-10 align-self-start mt-2">Disponibles en el mes</span> <span class="badge badge-warning px-3 py-2 col align-self-end"> <?php echo ($disponibleMes > $disponibleAnnio) ? $disponibleAnnio : $disponibleMes ?></span>
 										<?php } else { ?>
 											<span style="color:red">Ya superaste las cantidades permitidas</span>
 									<?php }  ?>
